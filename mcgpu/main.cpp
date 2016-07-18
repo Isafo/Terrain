@@ -1,4 +1,4 @@
-#include "GLew\glew.h"
+#include "GL\glew.h"
 
 #include "glfwContext.h"
 #include "Shader.h"
@@ -14,7 +14,7 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> //glm::make:mat4
-#include <glm\gtx\rotate_vector.hpp> // rotate vector
+#include <glm/gtx/rotate_vector.hpp> // rotate vector
 
 #include <iostream>
 
@@ -43,15 +43,15 @@ int main(){
 	// Print some info about the OpenGL context...
 	glfw.printGLInfo();
 
-	Shader sceneLight;
-	sceneLight.createShader("shaders/sceneV.glsl", "shaders/sceneF.glsl");
+	Shader terrainShader;
+	terrainShader.createShader("shaders/terrain.vert", "shaders/terrain.frag");
 
-	GLint locationP = glGetUniformLocation(sceneLight.programID, "P"); //perspective matrix
-	GLint locationMV = glGetUniformLocation(sceneLight.programID, "MV"); //modelview matrix
-	GLint locationM = glGetUniformLocation(sceneLight.programID, "M"); //modelview matrix
-	GLint locationLP = glGetUniformLocation(sceneLight.programID, "LP"); //modelview matrix
+	GLint locationP = glGetUniformLocation(terrainShader.programID, "P"); //perspective matrix
+	GLint locationMV = glGetUniformLocation(terrainShader.programID, "MV"); //modelview matrix
+	GLint locationM = glGetUniformLocation(terrainShader.programID, "M"); //modelview matrix
+	GLint locationLP = glGetUniformLocation(terrainShader.programID, "LP"); //modelview matrix
 	//	GLint* MVptr = &locationMV;
-	GLint locationTex = glGetUniformLocation(sceneLight.programID, "tex"); //texcoords
+	GLint locationTex = glGetUniformLocation(terrainShader.programID, "tex"); //texcoords
 
 	MatrixStack MVstack; MVstack.init();
 
@@ -91,12 +91,11 @@ int main(){
 
 		GLcalls();
 
-		glUseProgram(sceneLight.programID);
+		glUseProgram(terrainShader.programID);
 		
 		
 		MVstack.push();//Camera transforms --<
 			glUniformMatrix4fv(locationP, 1, GL_FALSE, mCamera.getPerspective());
-
 
 			//glm::transpose(cameraT);
 			MVstack.multiply(mCamera.getTransformM());
@@ -120,9 +119,7 @@ int main(){
 				MVstack.multiply(firstMesh.getOrientation());
 				MVstack.translate(firstMesh.getPosition());
 				MVstack.scale(25.0f);
-
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
-				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				firstMesh.render();
 			MVstack.pop(); //mesh transforms >--
 			MVstack.push();//Plane transforms --<
