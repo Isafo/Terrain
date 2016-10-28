@@ -3,6 +3,7 @@ layout(points) in;
 layout(triangle_strip) out;
 layout(max_vertices = 15) out;
 
+uniform vec3 octantPos;
 uniform sampler3D scalarField;
 uniform isampler2D triTable;
 
@@ -87,33 +88,20 @@ void main() {
 		int ti1 = texelFetch(triTable, ivec2(i + 1, cubeIndex), 0).a;
 		int ti2 = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
 
-		vec3 triNormal = cross(edgeVert[ti1] - edgeVert[ti], edgeVert[ti2] - edgeVert[ti]);
+		vec3 triNormal = normalize(cross(edgeVert[ti1] - edgeVert[ti], edgeVert[ti2] - edgeVert[ti]));
 
-		// vec3 grad;
-		// grad.x = texture(scalarField, xyz[ti] + vec3(1 / dim, 0.0, 0.0)).r - texture(scalarField, xyz[ti] - vec3(1 / dim, 0.0, 0.0)).r;
-		// grad.y = texture(scalarField, xyz[ti] + vec3(0.0, 1 / dim, 0.0)).r - texture(scalarField, xyz[ti] - vec3(0.0, 1 / dim, 0.0)).r;
-		// grad.z = texture(scalarField, xyz[ti] + vec3(0.0, 0.0, 1 / dim)).r - texture(scalarField, xyz[ti] - vec3(0.0, 0.0, 1 / dim)).r;
-
-		vertexPosition = edgeVert[ti];
-		vertexNormal = triNormal;
+		vertexPosition = octantPos + edgeVert[ti];
+		vertexNormal = normalize(triNormal);
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
-		// grad.x = texture(scalarField, xyz[ti1] + vec3(1 / dim, 0.0, 0.0)).r - texture(scalarField, xyz[ti1] - vec3(1 / dim, 0.0, 0.0)).r;
-		// grad.y = texture(scalarField, xyz[ti1] + vec3(0.0, 1 / dim, 0.0)).r - texture(scalarField, xyz[ti1] - vec3(0.0, 1 / dim, 0.0)).r;
-		// grad.z = texture(scalarField, xyz[ti1] + vec3(0.0, 0.0, 1 / dim)).r - texture(scalarField, xyz[ti1] - vec3(0.0, 0.0, 1 / dim)).r;
-
-		vertexPosition = edgeVert[ti1];
-		vertexNormal = triNormal;
+		vertexPosition = octantPos + edgeVert[ti1];
+		vertexNormal = normalize(triNormal);
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
-		// grad.x = texture(scalarField, xyz[ti2] + vec3(1 / dim, 0.0, 0.0)).r - texture(scalarField, xyz[ti2] - vec3(1 / dim, 0.0, 0.0)).r;
-		// grad.y = texture(scalarField, xyz[ti2] + vec3(0.0, 1 / dim, 0.0)).r - texture(scalarField, xyz[ti2] - vec3(0.0, 1 / dim, 0.0)).r;
-		// grad.z = texture(scalarField, xyz[ti2] + vec3(0.0, 0.0, 1 / dim)).r - texture(scalarField, xyz[ti2] - vec3(0.0, 0.0, 1 / dim)).r;
-
-		vertexPosition = edgeVert[ti2];
-		vertexNormal = triNormal;
+		vertexPosition = octantPos + edgeVert[ti2];
+		vertexNormal = normalize(triNormal);
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 

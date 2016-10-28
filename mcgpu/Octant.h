@@ -54,8 +54,6 @@ public:
 	unsigned char* voxelData;
 
 private:
-	
-
 
 };
 

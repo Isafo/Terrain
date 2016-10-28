@@ -260,7 +260,8 @@ Temporary Items
 # Sub directories
 include/
 lib/
-
+external/
+Terrain.VC.db
 
 # RC files
 *.rc

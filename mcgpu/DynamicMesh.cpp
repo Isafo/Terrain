@@ -108,19 +108,6 @@ void DynamicMesh::createBuffers() {
 	glBufferData(GL_ARRAY_BUFFER,
 				 (MAX_NR_OF_VERTICES) * sizeof(dBufferData), NULL, GL_STREAM_DRAW);
 
-	//vertexP = (dBufferData*)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(dBufferData) * MAX_NR_OF_VERTICES,
-	//										 GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-
-	//for (int i = 0; i < MAX_NR_OF_VERTICES; i++) {
-	//	vertexP[i].x = 0.0f;
-	//	vertexP[i].y = 0.0f;
-	//	vertexP[i].z = 0.0f;
-	//	vertexP[i].nx = 0.0f;
-	//	vertexP[i].ny = 0.0f;
-	//	vertexP[i].nz = 0.0f;
-	//}
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
-
 	// Specify how many attribute arrays we have in our VAO
 	glEnableVertexAttribArray(0); // Vertex coordinates
 	glEnableVertexAttribArray(1); // Normals
@@ -142,17 +129,6 @@ void DynamicMesh::createBuffers() {
 	// Present our vertex indices to OpenGL
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 				 (MAX_NR_OF_TRIANGLES) * sizeof(triangle), NULL, GL_STREAM_DRAW);
-
-	/*indexP = (triangle*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(triangle) * MAX_NR_OF_TRIANGLES,
-		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-
-	for (int i = 0; i < MAX_NR_OF_TRIANGLES; i++) {
-		indexP[i].index[0] = 0;
-		indexP[i].index[1] = 0;
-		indexP[i].index[2] = 0;
-	}
-
-	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);*/
 
 	// Deactivate (unbind) the VAO and the buffers again.
 	// Do NOT unbind the buffers while the VAO is still bound.
@@ -433,23 +409,6 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
 
-	//unsigned char* voxelData = new unsigned char[voxelRes*voxelRes*voxelRes];
-
-	//for (int x = 0; x < voxelRes; ++x){
-	//	for (int y = 0; y < voxelRes; ++y){
-	//		for (int z = 0; z < voxelRes; ++z){
-	//			if ((x > voxelRes / 4 && x < (voxelRes * 3) / 4) && (y > voxelRes / 4 && y < (voxelRes * 3) / 4) && (z > voxelRes / 4 && z < (voxelRes * 3) / 4))
-	//			voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
-	//			else
-	//			voxelData[x + voxelRes*(y + voxelRes*z)] = 0;
-	//			//voxelData[x + voxelRes*(y + voxelRes*z)] = 128;
-
-	//			if (x == voxelRes / 4 && y % 4 == 0 && (y > voxelRes / 4 && y < (voxelRes * 3) / 4) && (z > voxelRes / 4 && z < (voxelRes * 3) / 4))
-	//				voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
-	//		}
-	//	}
-	//}
-
 	glEnable(GL_TEXTURE_3D);
 	glActiveTexture(GL_TEXTURE0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -474,7 +433,7 @@ void DynamicMesh::genTableTex() {
 
 void DynamicMesh::render() {
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, MAX_NR_OF_TRIANGLES);
+	glDrawArrays(GL_TRIANGLES, 0, MAX_NR_OF_VERTICES * 3);
 	//glDrawElements(GL_TRIANGLES, 1000 * sizeof(triangle), GL_UNSIGNED_INT, (void*)0);
 	// (mode, vertex uN, type, element array buffer offset)
 	glBindVertexArray(0);

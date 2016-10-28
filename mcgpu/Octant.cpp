@@ -7,9 +7,7 @@
 Octant::Octant() {
 	parent = nullptr;
 	depth = NULL;
-
-
-
+	vBufferIndex = 0;
 }
 
 Octant::Octant(int _depth, Octant* _parent, float x, float y, float z, float _halfDim) {
@@ -23,36 +21,6 @@ Octant::Octant(int _depth, Octant* _parent, float x, float y, float z, float _ha
 
 
 Octant::~Octant() {
-
-	/*if (depth == MAX_DEPTH) {
-		int scalarNR = std::pow(2, (10 - depth));
-
-		for (int i = 0; i < scalarNR; i++)
-			for (int j = 0; j < scalarNR; j++)
-				delete scalarValue[i][j];
-
-		for (int i = 0; i < scalarNR; i++)
-			delete scalarValue[i];
-
-		delete scalarValue;
-	}
-	else {
-		if (child[0] != nullptr) {
-			delete child[0];
-			delete child[1];
-			delete child[2];
-			delete child[3];
-			delete child[4];
-			delete child[5];
-			delete child[6];
-			delete child[7];
-		}
-
-		delete scalarValue[0][0];
-		delete scalarValue[0];
-		delete scalarValue;
-	}*/
-
 	if (child[0] != nullptr) {
 		delete child[0];
 		child[0] = nullptr;
@@ -68,8 +36,8 @@ Octant::~Octant() {
 
 //do NOT use on MAX_DEPTH octants
 void Octant::partition() {
-	//scalarValue = 0;
-	//isoBool = false;
+
+	vBufferIndex = NULL;
 
 	float d = halfDim / 2.0f;
 	child[0] = new Octant(depth + 1, this, pos[0] - d, pos[1] - d, pos[2] - d, d);
@@ -80,7 +48,6 @@ void Octant::partition() {
 	child[5] = new Octant(depth + 1, this, pos[0] + d, pos[1] - d, pos[2] + d, d);
 	child[6] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] - d, d);
 	child[7] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] + d, d);
-
 
 }
 

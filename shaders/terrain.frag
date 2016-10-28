@@ -9,7 +9,7 @@ in vec3 Grad;
 uniform vec3 LP;
 uniform sampler2D tex;
 
-const float shininess = 16.0;
+const float shininess = 802.0;
 
 void main () {
 
@@ -22,9 +22,10 @@ void main () {
 
 	vec3 white = vec3(1.0, 1.0, 1.0);
 
-	float snowHeight;
 	float g = max(dot(Grad, vec3(0.0, 1.0, 0.0)), 0.0);
 	vec3 color =  vec3(1.0 - g, max(g, 1-g), 1.0-g);
+
+	//vec3 color = Grad;
 
 	//Diffuse part-----------
 	float diff = max(dot(lightDir, normal), 0.0);

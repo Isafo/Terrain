@@ -24,9 +24,10 @@ private:
 	GLint triTable;
 	GLint edgeTable;
 
-	GLint octantPos;
+	GLint octantPosGen;
+	GLint octantPosMC;
 	//GLint isoValue;
 
-
+	bool first = true;
 };
 

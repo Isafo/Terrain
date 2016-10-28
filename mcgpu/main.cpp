@@ -29,8 +29,7 @@ int main(){
 	glfwContext glfw;
 	GLFWwindow* currentWindow = nullptr;
 
-	//glfw.init(640, 480, "mCity");
-	glfw.init(1920, 1080, "mCity");
+	glfw.init(1920, 1080, "Terrain");
 	glfw.getCurrentWindow(currentWindow);
 	glfwSetCursorPos(currentWindow, 960, 540);
 
@@ -58,24 +57,28 @@ int main(){
 	//scene objects
 	Sphere testSphere(0.0f, 0.0f, -1.0f, 0.1f);
 	Sphere testSphere1(0.5f, -10.5f, -1.0f, 0.1f);
+	Sphere refSphere(0.0f, 0.0f, 0.0f, 1.0f);
 
 	Sphere lightOne(0.0f, 0.0f, 0.0f, 0.1f);
 	//TODO: do this properly
-	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);// glm::vec4(lightOne.getPosition()[0], lightOne.getPosition()[1], lightOne.getPosition()[2], 1.0f);
+	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	glm::mat4 lightT = glm::mat4(1.0f);
 
-	Octant Octree;
+	Octant octree;
+
+	octree.halfDim = 0.91f;
+	octree.partition();
+
 	testGenerator firstTest;
 	DynamicMesh firstMesh;
 	firstMesh.createBuffers();
 	firstMesh.genTableTex();
-	firstTest.generate(&Octree, &firstMesh);
-	firstMesh.setPosition(&glm::vec3(0.0f, -25.0f, 0.0f));
+	firstTest.generate(&octree, &firstMesh);
+	firstMesh.setPosition(&octree.pos);
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, 0.0f));
 	mCamera.update();
-
 
 	double lastTime = glfwGetTime() - 0.001;
 	double dT = 0.0;
@@ -100,7 +103,6 @@ int main(){
 			//glm::transpose(cameraT);
 			MVstack.multiply(mCamera.getTransformM());
 
-
 			glUniform3fv(locationLP, 1, &(*(MVstack.getCurrentMatrixM())*glm::vec4(*(lightOne.getPositionV()), 1.0f))[0]);
 			MVstack.push();//light transforms --<
 				//MVstack.translate(lightOne.getPositionV());
@@ -118,9 +120,10 @@ int main(){
 				//MVstack.multiply(testSphere1.getTransformM());
 				MVstack.multiply(firstMesh.getOrientation());
 				MVstack.translate(firstMesh.getPosition());
-				MVstack.scale(25.0f);
+				MVstack.scale(1.0f);
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				firstMesh.render();
+				//refSphere.render();
 			MVstack.pop(); //mesh transforms >--
 			MVstack.push();//Plane transforms --<
 				MVstack.multiply(testSphere.getTransformM());
@@ -129,7 +132,6 @@ int main(){
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				testSphere.render();
 			MVstack.pop(); //Plane transforms >--
-
 		MVstack.pop(); //Camera transforms >--
 
 		glfwSwapBuffers(currentWindow);
@@ -143,8 +145,7 @@ void inputHandler(GLFWwindow* _window, double _dT)
 {
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE)) {
 		glfwSetWindowShouldClose(_window, GL_TRUE);
-	}
-	
+	}	
 }
 
 void GLcalls()
@@ -158,8 +159,8 @@ void GLcalls()
 	//glShadeModel(GL_FLAT);
 	glCullFace(GL_BACK);
 	//glDisable(GL_TEXTURE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glFrontFace(GL_CCW);

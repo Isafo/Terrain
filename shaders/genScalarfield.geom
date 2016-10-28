@@ -3,6 +3,8 @@ layout(points) in;
 layout(points, max_vertices = 1) out;
 layout(invocations = 32) in; // run 32 instances for all slices in the 3D texture
 
+//=================================================================
+//=================================================================
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
 //      Author : Ian McEwan, Ashima Arts.
@@ -76,7 +78,14 @@ float snoise(vec2 v)
 }
 
 //=================================================================
+//=================================================================
+//=================================================================
+//=================================================================
 
+// Description : Generates scalar values for a block of 32^3 voxels
+//      Author : Isabelle Forsman, isafo268
+
+uniform vec3 octantPos;
 
 out float scalarValue;
 
@@ -84,16 +93,9 @@ const int dim = 32;
 
 void main() {
 	// calculate the scalarvalue
-	
-	/*if (gl_in[0].gl_Position.y < (dim / 2) + sin(100.0f * float(gl_in[0].gl_Position.x / dim)) + sin( 100.0f * float(gl_InvocationID / dim)) || 
-		( mod(gl_in[0].gl_Position.x, 6)  == 0 && mod(gl_InvocationID, 6)  == 0 && gl_in[0].gl_Position.y < (dim / 2) + 10 ))
-		scalarValue = 1.0;
-	else
-		scalarValue = 0.0;*/
+	float test = snoise(vec2((float(gl_in[0].gl_Position.x / dim) + octantPos.x), (float(gl_InvocationID  / dim) + octantPos.z)));
 
-	float test = snoise(vec2(float(gl_in[0].gl_Position.x) / float(dim), float(gl_InvocationID) / float(dim)));
-
-	if (gl_in[0].gl_Position.y < (dim / 2) + sin(10.0f * test.x) * 2.0)
+	if (gl_in[0].gl_Position.y / float(dim) + octantPos.y < sin(3.0f * test) * 0.1)
 		scalarValue = 1.0;
 	else
 		scalarValue = 0.0;
